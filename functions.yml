@@ -1,0 +1,22 @@
+hello:
+  name: hello-dev-query
+  memorySize: 128
+  timeout: 30
+  handler: src/function/handler.hello
+  events:
+    - http:
+        path: hello
+        method: get
+        cors: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchGetItem
+      Resource:
+        - { 'Fn::GetAtt': ['testTable', 'Arn'] }

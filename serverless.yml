@@ -1,0 +1,37 @@
+# NOTE: update this with your service name
+service: serverless-typescript-starter
+
+# Create an optimized package for our functions
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - README.md
+    - .serverless/
+    - .webpack/
+    - test/**
+    - /*.yml
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-stack-output
+  - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-prune-plugin
+  - serverless-plugin-custom-roles
+  - serverless-offline
+
+custom:
+  stage: ${opt:stage, 'local'}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  apiName: ${self:service}
+  stackName: ${self:service}-${self:custom.stage}
+
+functions: ${file(./functions.yml)}
+
+resources:
+  - ${file(./resources/dynamo.table.yml)}
